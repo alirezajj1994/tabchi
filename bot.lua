@@ -197,13 +197,13 @@ function tdcli_update_callback(data)
 					local matches = text:match("^حذف لینک (.*)$")
 					if matches == "عضویت" then
 						redis:del("botBOT-IDgoodlinks")
-						return send(msg.chat_id_, msg.id_, "لیست لینک های در انتظار عضویت پاکسازی شد.")
+						return send(msg.chat_id_, msg.id_, "ok.")
 					elseif matches == "تایید" then
 						redis:del("botBOT-IDwaitelinks")
-						return send(msg.chat_id_, msg.id_, "لیست لینک های در انتظار تایید پاکسازی شد.")
+						return send(msg.chat_id_, msg.id_, "ok.")
 					elseif matches == "ذخیره شده" then
 						redis:del("botBOT-IDsavedlinks")
-						return send(msg.chat_id_, msg.id_, "لیست لینک های ذخیره شده پاکسازی شد.")
+						return send(msg.chat_id_, msg.id_, "ok.")
 					end
 				elseif text:match("^(حذف کلی لینک) (.*)$") then
 					local matches = text:match("^حذف کلی لینک (.*)$")
@@ -212,56 +212,56 @@ function tdcli_update_callback(data)
 						for i, v in ipairs(list) do
 							redis:srem("botBOT-IDalllinks", v)
 						end
-						send(msg.chat_id_, msg.id_, "لیست لینک های در انتظار عضویت بطورکلی پاکسازی شد.")
+						send(msg.chat_id_, msg.id_, "ok.")
 						redis:del("botBOT-IDgoodlinks")
 					elseif matches == "تایید" then
 						local list = redis:smembers("botBOT-IDwaitelinks")
 						for i, v in ipairs(list) do
 							redis:srem("botBOT-IDalllinks", v)
 						end
-						send(msg.chat_id_, msg.id_, "لیست لینک های در انتظار تایید بطورکلی پاکسازی شد.")
+						send(msg.chat_id_, msg.id_, "ok.")
 						redis:del("botBOT-IDwaitelinks")
 					elseif matches == "ذخیره شده" then
 						local list = redis:smembers("botBOT-IDsavedlinks")
 						for i, v in ipairs(list) do
 							redis:srem("botBOT-IDalllinks", v)
 						end
-						send(msg.chat_id_, msg.id_, "لیست لینک های ذخیره شده بطورکلی پاکسازی شد.")
+						send(msg.chat_id_, msg.id_, "ok.")
 						redis:del("botBOT-IDsavedlinks")
 					end
 				elseif text:match("^(توقف) (.*)$") then
 					local matches = text:match("^توقف (.*)$")
-					if matches == "عضویت" then	
+					if matches == "1" then	
 						redis:set("botBOT-IDmaxjoin", true)
 						redis:set("botBOT-IDoffjoin", true)
-						return send(msg.chat_id_, msg.id_, "فرایند عضویت خودکار متوقف شد.")
-					elseif matches == "تایید لینک" then	
+						return send(msg.chat_id_, msg.id_, "ok.")
+					elseif matches == "2" then	
 						redis:set("botBOT-IDmaxlink", true)
 						redis:set("botBOT-IDofflink", true)
-						return send(msg.chat_id_, msg.id_, "فرایند تایید لینک در های در انتظار متوقف شد.")
-					elseif matches == "شناسایی لینک" then	
+						return send(msg.chat_id_, msg.id_, "ok.")
+					elseif matches == "3" then	
 						redis:del("botBOT-IDlink")
-						return send(msg.chat_id_, msg.id_, "فرایند شناسایی لینک متوقف شد.")
+						return send(msg.chat_id_, msg.id_, "ok.")
 					elseif matches == "افزودن مخاطب" then	
 						redis:del("botBOT-IDsavecontacts")
-						return send(msg.chat_id_, msg.id_, "فرایند افزودن خودکار مخاطبین به اشتراک گذاشته شده متوقف شد.")
+						return send(msg.chat_id_, msg.id_, "ok.")
 					end
 				elseif text:match("^(شروع) (.*)$") then
 					local matches = text:match("^شروع (.*)$")
-					if matches == "عضویت" then	
+					if matches == "1" then	
 						redis:del("botBOT-IDmaxjoin")
 						redis:del("botBOT-IDoffjoin")
-						return send(msg.chat_id_, msg.id_, "فرایند عضویت خودکار فعال شد.")
-					elseif matches == "تایید لینک" then	
+						return send(msg.chat_id_, msg.id_, "ok.")
+					elseif matches == "2" then	
 						redis:del("botBOT-IDmaxlink")
 						redis:del("botBOT-IDofflink")
-						return send(msg.chat_id_, msg.id_, "فرایند تایید لینک های در انتظار فعال شد.")
-					elseif matches == "شناسایی لینک" then	
+						return send(msg.chat_id_, msg.id_, "ok.")
+					elseif matches == "3" then	
 						redis:set("botBOT-IDlink", true)
-						return send(msg.chat_id_, msg.id_, "فرایند شناسایی لینک فعال شد.")
+						return send(msg.chat_id_, msg.id_, "ok.")
 					elseif matches == "افزودن مخاطب" then	
 						redis:set("botBOT-IDsavecontacts", true)
-						return send(msg.chat_id_, msg.id_, "فرایند افزودن خودکار مخاطبین به اشتراک  گذاشته شده فعال شد.")
+						return send(msg.chat_id_, msg.id_, "ok.")
 					end
 				elseif text:match("^(افزودن مدیر) (%d+)$") then
 					local matches = text:match("%d+")
@@ -528,14 +528,14 @@ function tdcli_update_callback(data)
 <b>]] .. tostring(links)..[[</b>
  😼 سازنده : @i_naji]]
 					return send(msg.chat_id_, 0, text)
-				elseif (text:match("^(ارسال به) (.*)$") and msg.reply_to_message_id_ ~= 0) then
+				elseif (text:match("^(send) (.*)$") and msg.reply_to_message_id_ ~= 0) then
 					local matches = text:match("^ارسال به (.*)$")
 					local naji
 					if matches:match("^(خصوصی)") then
 						naji = "botBOT-IDusers"
 					elseif matches:match("^(گروه)$") then
 						naji = "botBOT-IDgroups"
-					elseif matches:match("^(سوپرگروه)$") then
+					elseif matches:match("^(sg)$") then
 						naji = "botBOT-IDsupergroups"
 					else
 						return true
@@ -552,9 +552,9 @@ function tdcli_update_callback(data)
 							from_background_ = 1
 						}, dl_cb, nil)
 					end
-					return send(msg.chat_id_, msg.id_, "<i>با موفقیت فرستاده شد</i>")
+					return send(msg.chat_id_, msg.id_, "<i>ok</i>")
 				elseif text:match("^(ارسال به سوپرگروه) (.*)") then
-					local matches = text:match("^ارسال به سوپرگروه (.*)")
+					local matches = text:match("^send sg (.*)")
 					local dir = redis:smembers("botBOT-IDsupergroups")
 					for i, v in pairs(dir) do
 						tdcli_function ({
@@ -574,7 +574,7 @@ function tdcli_update_callback(data)
 							},
 						}, dl_cb, nil)
 					end
-                    			return send(msg.chat_id_, msg.id_, "<i>با موفقیت فرستاده شد</i>")
+                    			return send(msg.chat_id_, msg.id_, "<i>ok</i>")
 				elseif text:match("^(مسدودیت) (%d+)$") then
 					local matches = text:match("%d+")
 					rem(tonumber(matches))
@@ -583,7 +583,7 @@ function tdcli_update_callback(data)
 						ID = "BlockUser",
 						user_id_ = tonumber(matches)
 					}, dl_cb, nil)
-					return send(msg.chat_id_, msg.id_, "<i>کاربر مورد نظر مسدود شد</i>")
+					return send(msg.chat_id_, msg.id_, "<i>ok</i>")
 				elseif text:match("^(رفع مسدودیت) (%d+)$") then
 					local matches = text:match("%d+")
 					add(tonumber(matches))
@@ -668,7 +668,7 @@ function tdcli_update_callback(data)
 							user_id_ = bot_id,
 							status_ = {ID = "ChatMemberStatusLeft"},
 						}, dl_cb, nil)
-					elseif text:match("^(افزودن همه مخاطبین)$") then
+					elseif text:match("^(ad al)$") then
 						tdcli_function({
 							ID = "SearchContacts",
 							query_ = nil,
@@ -692,7 +692,7 @@ function tdcli_update_callback(data)
 								},  dl_cb, nil)
 							end
 						end, {chat_id=msg.chat_id_})
-						return send(msg.chat_id_, msg.id_, "<i>در حال افزودن مخاطبین به گروه ...</i>")
+						return send(msg.chat_id_, msg.id_, "<i>ok</i>")
 					end
 				end
 			end
