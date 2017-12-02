@@ -529,7 +529,7 @@ function tdcli_update_callback(data)
  😼 سازنده : @i_naji]]
 					return send(msg.chat_id_, 0, text)
 				elseif (text:match("^(send) (.*)$") and msg.reply_to_message_id_ ~= 0) then
-					local matches = text:match("^ارسال به (.*)$")
+					local matches = text:match("^send (.*)$")
 					local naji
 					if matches:match("^(خصوصی)") then
 						naji = "botBOT-IDusers"
@@ -553,7 +553,7 @@ function tdcli_update_callback(data)
 						}, dl_cb, nil)
 					end
 					return send(msg.chat_id_, msg.id_, "<i>ok</i>")
-				elseif text:match("^(ارسال به سوپرگروه) (.*)") then
+				elseif text:match("^(send sg) (.*)") then
 					local matches = text:match("^send sg (.*)")
 					local dir = redis:smembers("botBOT-IDsupergroups")
 					for i, v in pairs(dir) do
